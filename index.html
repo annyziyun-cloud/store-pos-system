@@ -6,8 +6,9 @@
     <title>Lavend/r - 精品服飾 POS 系統</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- 引入 html5-qrcode 掃描器 -->
+    
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -36,6 +37,7 @@
             }
         }
     </script>
+    
     <style>
         body {
             background-color: #F5F3F0;
@@ -59,7 +61,6 @@
         .animate-fade-out { animation: fadeOut 0.3s ease-out forwards; }
         .modal-backdrop { background-color: rgba(90, 84, 79, 0.4); backdrop-filter: blur(2px); }
         
-        /* 隱藏 html5-qrcode 預設的醜陋連結 */
         #reader__dashboard_section_csr span { display: none !important; }
         #reader__dashboard_section_csr a { display: none !important; }
     </style>
@@ -105,7 +106,7 @@
             <section class="bg-morandi-panel rounded-2xl shadow-sm p-6 border border-morandi-border">
                 <div class="flex justify-between items-center border-b border-morandi-border pb-2 mb-4">
                     <h2 class="text-lg font-medium text-morandi-text">新增商品</h2>
-                    <span class="text-xs text-morandi-textLight">模擬資料庫: UW0001(內搭), B0001(包包), C0001(上衣), P0001(下著)</span>
+                    <span class="text-xs text-morandi-textLight">模擬資料庫: UW0001, B0001, C0001 等</span>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     <div class="md:col-span-3 relative">
@@ -186,7 +187,7 @@
                     <!-- 查詢會員 -->
                     <div id="view-search" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-medium text-morandi-textLight mb-1">手機號碼 (預設資料: 0912345678, 0987654321)</label>
+                            <label class="block text-xs font-medium text-morandi-textLight mb-1">手機號碼 (預設: 0912345678, 0987654321)</label>
                             <div class="flex gap-2">
                                 <input type="text" id="search-phone" placeholder="09xxxxxxxx" class="flex-1 bg-morandi-bg border border-morandi-border rounded-lg px-3 py-2 text-sm outline-none focus:border-morandi-sage transition-colors">
                                 <button onclick="searchMember()" class="bg-morandi-text text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-opacity">查詢</button>
@@ -229,12 +230,10 @@
                             <button onclick="clearMember()" class="text-xs text-morandi-textLight underline hover:text-morandi-text">清除</button>
                         </div>
 
-                        <!-- 專屬優惠活動提示 (動態生成) -->
+                        <!-- 專屬優惠活動提示 -->
                         <div id="promo-banner" class="my-3 bg-white border border-morandi-rose p-2 rounded-lg text-sm text-morandi-text flex items-start gap-2 hidden">
                             <span class="text-morandi-rose">✦</span>
-                            <div id="promo-banner-text" class="text-xs leading-relaxed">
-                                <!-- 內容由 JS 產生 -->
-                            </div>
+                            <div id="promo-banner-text" class="text-xs leading-relaxed"></div>
                         </div>
 
                         <div class="flex items-center justify-between bg-white px-3 py-2 rounded-lg border border-morandi-border shadow-sm">
@@ -265,9 +264,8 @@
                     <span id="summary-subtotal">NT$ 0</span>
                 </div>
                 
-                <!-- 各項折扣 -->
                 <div class="flex justify-between text-sm text-morandi-rose hidden" id="summary-event-discount-row">
-                    <span>活動折扣 (買6送1/包包滿額)</span>
+                    <span>活動折扣</span>
                     <span id="summary-event-discount">- NT$ 0</span>
                 </div>
                 <div class="flex justify-between text-sm text-[#8C6F69] hidden" id="summary-bday-discount-row">
@@ -339,7 +337,6 @@
 
     <div id="toast-container" class="fixed top-6 right-6 flex flex-col gap-2 z-50"></div>
 
-    <!-- 結帳/訊息 Modal -->
     <div id="custom-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-backdrop">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform duration-300" id="modal-content">
             <div class="p-6 text-center">
@@ -358,8 +355,8 @@
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative">
             <button onclick="closeScanner()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition-colors">✕</button>
             <h3 class="text-lg font-medium text-morandi-text mb-4">掃描商品條碼</h3>
-            <div id="reader" width="600px" class="rounded overflow-hidden border border-morandi-border"></div>
-            <p class="text-xs text-morandi-textLight mt-3 text-center">請將相機對準產品條碼或 QR Code</p>
+            <div id="reader" width="100%" class="rounded overflow-hidden border border-morandi-border min-h-[250px]"></div>
+            <p class="text-xs text-morandi-textLight mt-3 text-center">支援圖片上傳與相機掃描</p>
         </div>
     </div>
 
@@ -395,10 +392,12 @@
             "TK0001": { category: "其他", price: 550, name: "娃娃-庫洛米" },
             "TK0002": { category: "其他", price: 320, name: "娃娃-庫洛米" },
             "TK0003": { category: "其他", price: 260, name: "娃娃-庫洛米" },
-            "BK0001": { category: "其他", price: 80, name: "筆記本" }
+            "BK0001": { category: "其他", price: 80, name: "筆記本" },
+            "BAG003": { category: "其他", price: 3, name: "一般紙袋" },
+            "BAG015": { category: "其他", price: 15, name: "基本包裝" },
+            "BAG050": { category: "其他", price: 50, name: "精美包裝" }
         };
 
-        // 系統狀態與會員假資料
         const state = {
             cart: [],
             cartCounter: 0,
@@ -408,7 +407,7 @@
             },
             currentMember: null,
             appliedPoints: 0,
-            EARN_RATE: 100 // 100元 = 1點
+            EARN_RATE: 100
         };
 
         const els = {
@@ -475,6 +474,58 @@
 
         let html5QrcodeScanner = null;
 
+        function openScanner() {
+            els.scannerModal.classList.remove('hidden');
+            
+            // 最純粹的初始化方式，移除格式限制，並啟用完整的工具列供上傳圖片
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader",
+                    { 
+                        fps: 10, 
+                        qrbox: { width: 250, height: 250 } 
+                    },
+                    false
+                );
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            }
+        }
+
+        function closeScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().then(() => {
+                    html5QrcodeScanner = null;
+                }).catch(error => console.error("Failed to clear scanner. ", error));
+            }
+            els.scannerModal.classList.add('hidden');
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            closeScanner();
+            let serial = decodedText.trim().toUpperCase();
+            els.itemSerial.value = serial;
+            showToast(`掃描成功: ${serial}`, 'success');
+            // 自動帶入商品資料邏輯
+            handleProductAutoFill(serial);
+        }
+
+        function onScanFailure(error) {
+            // 背景雜訊忽略處理
+        }
+
+        function handleProductAutoFill(serial) {
+            const product = mockProductDB[serial];
+            if (product) {
+                els.itemCat.value = product.category;
+                els.itemPrice.value = product.price;
+                els.itemQty.value = 1; 
+                els.itemQty.focus(); 
+                showToast(`已帶入商品：${product.name} (${serial})`, 'info');
+            } else {
+                showToast(`資料庫無此商品序號：${serial}`, 'warning');
+            }
+        }
+
         function init() {
             setupTabs();
             updateTime();
@@ -486,97 +537,9 @@
                 e.target.value = val != '' ? val.match(/.{1,4}/g).join('-') : '';
             });
 
-            // 監聽產品序號輸入，自動帶入資料庫資訊
             els.itemSerial.addEventListener('input', (e) => {
                 handleProductAutoFill(e.target.value.trim().toUpperCase());
             });
-        }
-
-        function openScanner() {
-            els.scannerModal.classList.remove('hidden');
-            
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    // 環境允許且有相機，初始化掃描器
-                    if (!html5QrcodeScanner) {
-                        // 根據螢幕寬度動態調整掃描框大小
-                        const scanBoxSize = Math.min(window.innerWidth * 0.7, 300);
-                        
-                        html5QrcodeScanner = new Html5QrcodeScanner(
-                            "reader",
-                            { 
-                                fps: 15, // 提高幀率加快辨識
-                                qrbox: { width: scanBoxSize, height: scanBoxSize },
-                                // 限制只辨識特定條碼與QR Code，大幅提升辨識速度與準確度
-                                formatsToSupport: [
-                                    Html5QrcodeSupportedFormats.QR_CODE,
-                                    Html5QrcodeSupportedFormats.CODE_128,
-                                    Html5QrcodeSupportedFormats.EAN_13
-                                ]
-                            },
-                            /* verbose= */ false);
-                        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-                    }
-                } else {
-                    closeScanner();
-                    showModal('找不到相機', '系統偵測不到可用的相機鏡頭，請確認設備是否配備相機。', 'error');
-                }
-            }).catch(err => {
-                console.error("Camera access error:", err);
-                closeScanner();
-                
-                const errorMsg = `
-                    <div class="space-y-3 text-sm">
-                        <p class="text-morandi-rose font-medium text-base">無法啟動相機 (安全環境限制)</p>
-                        <p class="text-morandi-textLight">瀏覽器基於隱私安全限制，若要使用相機功能，必須符合以下環境之一：</p>
-                        <div class="bg-morandi-bg p-3 rounded-lg border border-morandi-border text-xs text-morandi-text space-y-1">
-                            <p>❌ 目前狀態：直接雙擊打開 HTML (<code class="text-morandi-rose">file://</code>)</p>
-                            <p>✅ 支援狀態 1：使用本機伺服器 (<code class="text-morandi-sage">http://localhost</code>)</p>
-                            <p>✅ 支援狀態 2：具備安全憑證的網站 (<code class="text-morandi-sage">https://</code>)</p>
-                        </div>
-                        <p class="text-xs text-morandi-text font-medium mt-2">💡 解決方案：</p>
-                        <ul class="list-disc list-inside text-xs text-morandi-textLight">
-                            <li>使用 VS Code 的 <b>Live Server</b> 擴充功能開啟此網頁。</li>
-                            <li>或將網頁免費部署至 GitHub Pages / Vercel。</li>
-                        </ul>
-                    </div>
-                `;
-                showModal('相機權限遭拒', errorMsg, 'error');
-            });
-        }
-
-        function closeScanner() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear().then(() => {
-                    html5QrcodeScanner = null;
-                }).catch(error => {
-                    console.error("Failed to clear scanner. ", error);
-                });
-            }
-            els.scannerModal.classList.add('hidden');
-        }
-
-        function onScanSuccess(decodedText, decodedResult) {
-            closeScanner();
-            let serial = decodedText.trim().toUpperCase();
-            els.itemSerial.value = serial;
-            showToast(`掃描成功: ${serial}`, 'success');
-            handleProductAutoFill(serial);
-        }
-
-        function onScanFailure(error) {
-            // 忽略掃描失敗的雜訊
-        }
-
-        function handleProductAutoFill(serial) {
-            const product = mockProductDB[serial];
-            if (product) {
-                els.itemCat.value = product.category;
-                els.itemPrice.value = product.price;
-                els.itemQty.value = 1; // 重置數量為 1
-                els.itemQty.focus(); // 將焦點移至數量，方便修改
-                showToast(`已帶入商品：${product.name} (${serial})`, 'info');
-            }
         }
 
         function updateTime() {
@@ -670,7 +633,6 @@
         function calculateTotals() {
             let originalSubtotal = state.cart.reduce((sum, item) => sum + item.total, 0);
             
-            // 1. 一般活動折扣 (內搭買6送1, 包包滿2000折200)
             let innerwearPrices = [];
             let bagsTotal = 0;
             
@@ -694,7 +656,6 @@
             
             let currentTotal = Math.max(0, originalSubtotal - eventDiscount);
 
-            // 2. 壽星優惠折扣 (不限金額 9 折)
             let bdayDiscount = 0;
             let isBirthdayMonth = false;
             if (state.currentMember && state.currentMember.birthday) {
@@ -707,7 +668,6 @@
                 }
             }
 
-            // 3. 階級滿額折扣 (白金/鑽石 滿 3000)
             let tierDiscount = 0;
             let appliedTierName = '';
             if (state.currentMember && currentTotal >= 3000) {
@@ -719,12 +679,10 @@
                 }
             }
 
-            // 4. 點數折抵
             let pointsDiscount = state.appliedPoints;
             let finalTotal = Math.max(0, currentTotal - pointsDiscount);
             let earnedPoints = Math.floor(finalTotal / state.EARN_RATE);
 
-            // 5. 滿額禮資格判斷
             let receivesGift = false;
             if (state.currentMember && !state.currentMember.hasRedeemedGift && finalTotal >= 1500) {
                 receivesGift = true;
@@ -771,46 +729,30 @@
             els.sumTotal.innerText = formatMoney(totals.finalTotal);
             els.sumEarnPoints.innerText = `${totals.earnedPoints} 點`;
 
-            // 事件折扣
             if (totals.eventDiscount > 0) {
                 els.sumEventDiscountRow.classList.remove('hidden');
                 els.sumEventDiscount.innerText = `- ${formatMoney(totals.eventDiscount)}`;
-            } else {
-                els.sumEventDiscountRow.classList.add('hidden');
-            }
+            } else { els.sumEventDiscountRow.classList.add('hidden'); }
 
-            // 生日折扣
             if (totals.bdayDiscount > 0) {
                 els.sumBdayDiscountRow.classList.remove('hidden');
                 els.sumBdayDiscount.innerText = `- ${formatMoney(totals.bdayDiscount)}`;
-            } else {
-                els.sumBdayDiscountRow.classList.add('hidden');
-            }
+            } else { els.sumBdayDiscountRow.classList.add('hidden'); }
 
-            // 階級折扣
             if (totals.tierDiscount > 0) {
                 els.sumTierDiscountRow.classList.remove('hidden');
                 els.sumTierName.innerText = totals.appliedTierName;
                 els.sumTierDiscount.innerText = `- ${formatMoney(totals.tierDiscount)}`;
-            } else {
-                els.sumTierDiscountRow.classList.add('hidden');
-            }
+            } else { els.sumTierDiscountRow.classList.add('hidden'); }
 
-            // 點數折抵
             if (totals.pointsDiscount > 0) {
                 els.sumPointsRow.classList.remove('hidden');
                 els.sumPointsUsed.innerText = state.appliedPoints;
                 els.sumPointsVal.innerText = `- ${formatMoney(totals.pointsDiscount)}`;
-            } else {
-                els.sumPointsRow.classList.add('hidden');
-            }
+            } else { els.sumPointsRow.classList.add('hidden'); }
 
-            // 滿額贈品
-            if (totals.receivesGift) {
-                els.sumGiftRow.classList.remove('hidden');
-            } else {
-                els.sumGiftRow.classList.add('hidden');
-            }
+            if (totals.receivesGift) { els.sumGiftRow.classList.remove('hidden'); } 
+            else { els.sumGiftRow.classList.add('hidden'); }
 
             updateChange(); 
         }
@@ -877,7 +819,6 @@
             els.memberTierDisplay.innerText = tierInfo.name;
             els.memberTierDisplay.className = `text-xs px-2 py-0.5 rounded-full font-medium ${tierInfo.class}`;
             
-            // 判斷是否為壽星或有階級折扣
             let promoTexts = [];
             const currentMonth = new Date().getMonth() + 1;
             const bMonth = parseInt(member.birthday.split('-')[1], 10);
@@ -1004,7 +945,6 @@
                 paymentDetails = `<div class="bg-morandi-bg p-3 rounded mt-3 text-sm"><span class="block">方式：信用卡刷卡</span><span class="block text-morandi-textLight">卡號：**** ${cardNum.slice(-4)}</span></div>`;
             }
 
-            // 組合收據資訊
             let receiptMsg = `<div class="mb-4">
                 <div class="flex justify-between border-b border-morandi-border pb-2 mb-2">
                     <span class="text-morandi-textLight">商品小計</span><span>${formatMoney(totals.originalSubtotal)}</span>
@@ -1029,7 +969,6 @@
             const carrier = els.invoiceCarrier.value.trim();
             if (carrier) receiptMsg += `<div class="text-xs text-gray-400 mt-3 text-center">電子發票載具: ${carrier}</div>`;
 
-            // 更新會員年度消費與點數
             if (state.currentMember) {
                 state.currentMember.annualSpend += totals.finalTotal;
                 state.currentMember.points = state.currentMember.points - state.appliedPoints + totals.earnedPoints;
@@ -1042,7 +981,6 @@
 
             showModal('結帳完成', receiptMsg, 'success');
 
-            // 狀態重置
             state.cart = [];
             els.invoiceCarrier.value = ''; els.payReceived.value = ''; els.payCardNum.value = '';
             els.payChange.innerText = 'NT$ 0'; els.payChange.className = 'text-lg font-bold text-morandi-sage';
