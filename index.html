@@ -499,9 +499,21 @@
                 if (devices && devices.length) {
                     // 環境允許且有相機，初始化掃描器
                     if (!html5QrcodeScanner) {
+                        // 根據螢幕寬度動態調整掃描框大小
+                        const scanBoxSize = Math.min(window.innerWidth * 0.7, 300);
+                        
                         html5QrcodeScanner = new Html5QrcodeScanner(
                             "reader",
-                            { fps: 10, qrbox: {width: 250, height: 250} },
+                            { 
+                                fps: 15, // 提高幀率加快辨識
+                                qrbox: { width: scanBoxSize, height: scanBoxSize },
+                                // 限制只辨識特定條碼與QR Code，大幅提升辨識速度與準確度
+                                formatsToSupport: [
+                                    Html5QrcodeSupportedFormats.QR_CODE,
+                                    Html5QrcodeSupportedFormats.CODE_128,
+                                    Html5QrcodeSupportedFormats.EAN_13
+                                ]
+                            },
                             /* verbose= */ false);
                         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
                     }
